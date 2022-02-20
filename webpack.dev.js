@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   mode: 'development',
   entry: './src/index.ts',
+  devtool: 'source-map',
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
@@ -25,13 +26,13 @@ module.exports = {
             },
           },
         ],
-        include: [
-          /src/,
-          /node_modules\/lit/,
-          /node_modules\/lit-element/,
-          /node_modules\/lit-html/,
-        ],
         exclude: /node_modules/,
+      },
+      // stop console errors about lit source maps not working
+      {
+        test: /\.js$/,
+        enforce: 'pre',
+        use: ['source-map-loader'],
       },
     ],
   },

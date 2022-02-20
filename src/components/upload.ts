@@ -1,14 +1,11 @@
 import {LitElement, html} from 'lit';
-import {customElement, property, state} from 'lit/decorators.js';
+import {customElement, state} from 'lit/decorators.js';
 import Papa from 'papaparse';
 
 import {localStorageKeys, eventKeys} from '../consts';
 
 @customElement('upload-component')
 class UploadComponent extends LitElement {
-  @property({type: Array})
-  dates: string[];
-
   @state()
   hasUploaded = false;
 

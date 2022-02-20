@@ -4,4 +4,5 @@ export const localStorageKeys = {
 
 export const eventKeys = {
   uploadData: 'uploaded-data',
+  clickedDate: 'clicked-date',
 };

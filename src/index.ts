@@ -1,2 +1,1 @@
-import './components/calendar';
-import './components/upload';
+import './components/app';
