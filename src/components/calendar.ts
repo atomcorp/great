@@ -1,10 +1,17 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 
+import {todaysDate} from '../utils/dates';
 @customElement('calendar-component')
 class CalendarComponent extends LitElement {
   @property({type: Array})
-  data: string[][] = [];
+  entries: string[][] = [];
+
+  @property({type: Boolean})
+  hasTodaysEntry = false;
+
+  @property({type: Boolean})
+  isEditingTodaysDate = false;
 
   handleDate = (date: string) => {
     const event = new CustomEvent('clicked-date', {
@@ -16,18 +23,21 @@ class CalendarComponent extends LitElement {
   };
 
   override render() {
-    if (Array.isArray(this.data)) {
+    if (Array.isArray(this.entries)) {
       return html`
         <section>
           <h3>Dates</h3>
           <ul>
-            ${this.data.map(
-              (data) =>
-                html`<li @click=${() => this.handleDate(data[0])}>
-                  ${data[0]}
-                </li>`
+            ${this.entries.map(
+              ([date, entry]) =>
+                html`<li @click=${() => this.handleDate(date)}>${entry}</li>`
             )}
           </ul>
+          ${!this.hasTodaysEntry && !this.isEditingTodaysDate
+            ? html`<button @click=${() => this.handleDate(todaysDate())}>
+                Add todays
+              </button>`
+            : ''}
         </section>
       `;
     }
