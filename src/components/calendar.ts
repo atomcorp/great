@@ -5,7 +5,7 @@ import {todaysDate} from '../utils/dates';
 @customElement('calendar-component')
 class CalendarComponent extends LitElement {
   @property({type: Array})
-  entries: string[][] = [];
+  dates: string[];
 
   @property({type: Boolean})
   hasTodaysEntry = false;
@@ -23,14 +23,14 @@ class CalendarComponent extends LitElement {
   };
 
   override render() {
-    if (Array.isArray(this.entries)) {
+    if (Array.isArray(this.dates)) {
       return html`
         <section>
           <h3>Dates</h3>
           <ul>
-            ${this.entries.map(
-              ([date, entry]) =>
-                html`<li @click=${() => this.handleDate(date)}>${entry}</li>`
+            ${this.dates.map(
+              (date) =>
+                html`<li @click=${() => this.handleDate(date)}>${date}</li>`
             )}
           </ul>
           ${!this.hasTodaysEntry && !this.isEditingTodaysDate

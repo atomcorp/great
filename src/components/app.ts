@@ -22,19 +22,24 @@ class AppComponent extends LitElement {
 
   @state()
   selectedDate = todaysDate();
-
   @state()
-  entry = '';
-
+  selectedEntry = getEntryFromDate(todaysDate());
   @state()
   entries: string[][] = [];
   @state()
   hasTodaysEntry = false;
+  @state()
+  isEditable = false;
 
   handleSelect = (e: CustomEvent<{date: string}>) => {
     const date = e.detail.date;
     this.selectedDate = date;
-    this.entry = getEntryFromDate(date);
+    this.selectedEntry = getEntryFromDate(date);
+    this.isEditable = false;
+  };
+
+  handleToggleEdit = () => {
+    this.isEditable = !this.isEditable;
   };
 
   handleSetEntry = (e: CustomEvent<{date: string; entry: string}>) => {
@@ -56,7 +61,8 @@ class AppComponent extends LitElement {
     setData(this.entries);
     this.hasTodaysEntry = !!getTodaysEntry(this.entries);
     this.selectedDate = date;
-    this.entry = entry;
+    this.selectedEntry = entry;
+    this.isEditable = false;
   };
 
   override render() {
@@ -64,13 +70,18 @@ class AppComponent extends LitElement {
       <upload-component></upload-component>
       <calendar-component
         ?hasTodaysEntry=${this.hasTodaysEntry}
-        .isEditingTodaysDate=${this.selectedDate === todaysDate()}
-        .entries=${this.entries}
+        ?isEditingTodaysDate=${this.selectedDate === todaysDate()}
+        .dates=${this.entries.map(([date]) => date).sort()}
       ></calendar-component>
       <entry-component
         .date=${this.selectedDate}
-        .entry=${this.entry}
-      ></entry-component>
+        .entry=${this.selectedEntry}
+        ?isEditable=${this.isEditable}
+      >
+        ${this.isEditable
+          ? html`<button @click=${this.handleToggleEdit}>Edit</button>`
+          : null}
+      </entry-component>
     `;
   }
 
@@ -78,11 +89,13 @@ class AppComponent extends LitElement {
     super.connectedCallback();
     window.addEventListener('clicked-date', this.handleSelect);
     window.addEventListener('set-entry', this.handleSetEntry);
+    window.addEventListener('toggle-editable', this.handleToggleEdit);
   }
 
   override disconnectedCallback() {
     window.removeEventListener('clicked-date', this.handleSelect);
     window.removeEventListener('set-entry', this.handleSetEntry);
+    window.removeEventListener('toggle-editable', this.handleToggleEdit);
     super.disconnectedCallback();
   }
 }

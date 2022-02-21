@@ -1,19 +1,14 @@
 import {LitElement, html} from 'lit';
-import {customElement, property, state} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 
 @customElement('entry-component')
 class EntryComponent extends LitElement {
   @property({type: String})
   date = '';
-
   @property({type: String})
   entry = '';
-
-  @state()
+  @property({type: Boolean})
   isEditable = false;
-
-  @state()
-  editableEntry = '';
 
   handleEntry = (e: Event) => {
     e.preventDefault();
@@ -31,6 +26,14 @@ class EntryComponent extends LitElement {
     }
   };
 
+  handleToggleEditable = () => {
+    const event = new CustomEvent('toggle-editable', {
+      bubbles: true,
+      composed: true,
+    });
+    this.dispatchEvent(event);
+  };
+
   override render() {
     if (!this.entry || this.isEditable) {
       // is new or can edit
@@ -39,12 +42,18 @@ class EntryComponent extends LitElement {
           <label
             >${this.date}:<br />
             <textarea
+              .value=${this.entry}
               name="editable-entry"
               placeholder="Write what you were grateful for today."
             ></textarea>
           </label>
           <br />
           <button>Save</button>
+          ${this.entry
+            ? html`<button @click=${this.handleToggleEditable} type="button">
+                Cancel
+              </button>`
+            : ''}
         </form>
       `;
     }
@@ -52,6 +61,7 @@ class EntryComponent extends LitElement {
       <section>
         <h3>Entry</h3>
         <div>${this.date}: ${this.entry}</div>
+        <button @click=${this.handleToggleEditable} type="button">Edit</button>
       </section>
     `;
   }
@@ -63,6 +73,7 @@ declare global {
   }
   interface WindowEventMap {
     'set-entry': CustomEvent<{date: string; entry: string}>;
+    'toggle-editable': CustomEvent;
   }
 }
 
