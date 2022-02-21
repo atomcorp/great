@@ -21,3 +21,7 @@ export const getData = (): string => {
   }
   return '';
 };
+
+export const setData = (data: string[][]) => {
+  localStorage.setItem(localStorageKeys.data, JSON.stringify(data));
+};

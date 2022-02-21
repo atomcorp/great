@@ -1,7 +1,7 @@
 import {LitElement, html} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 
-import {getData, getEntryFromDate} from '../utils/storage';
+import {getData, getEntryFromDate, setData} from '../utils/storage';
 import {getTodaysEntry, todaysDate} from '../utils/dates';
 
 import './calendar';
@@ -53,7 +53,10 @@ class AppComponent extends LitElement {
       copiedEntries.push([date, entry]);
     }
     this.entries = copiedEntries;
+    setData(this.entries);
     this.hasTodaysEntry = !!getTodaysEntry(this.entries);
+    this.selectedDate = date;
+    this.entry = entry;
   };
 
   override render() {
