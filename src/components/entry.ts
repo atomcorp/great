@@ -39,8 +39,8 @@ class EntryComponent extends LitElement {
       // is new or can edit
       return html`
         <form @submit=${this.handleEntry}>
-          <label
-            >${this.date}:<br />
+          <label>
+            ${this.date}:<br />
             <textarea
               .value=${this.entry}
               name="editable-entry"

@@ -6,12 +6,12 @@ import {todaysDate} from '../utils/dates';
 class CalendarComponent extends LitElement {
   @property({type: Array})
   dates: string[];
-
   @property({type: Boolean})
   hasTodaysEntry = false;
-
   @property({type: Boolean})
   isEditingTodaysDate = false;
+  @property({type: String})
+  selectedDate: string;
 
   handleDate = (date: string) => {
     const event = new CustomEvent('clicked-date', {
@@ -30,7 +30,11 @@ class CalendarComponent extends LitElement {
           <ul>
             ${this.dates.map(
               (date) =>
-                html`<li @click=${() => this.handleDate(date)}>${date}</li>`
+                html`<li @click=${() => this.handleDate(date)}>
+                  ${date === this.selectedDate
+                    ? html`<strong>${date}</strong>`
+                    : date}
+                </li>`
             )}
           </ul>
           ${!this.hasTodaysEntry && !this.isEditingTodaysDate

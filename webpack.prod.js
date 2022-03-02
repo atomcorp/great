@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const path = require('path');
 const {merge} = require('webpack-merge');
 const common = require('./webpack.common.js');
 
 module.exports = merge(common, {
-  mode: 'development',
+  mode: 'production',
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
 });

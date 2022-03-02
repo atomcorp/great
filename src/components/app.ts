@@ -1,8 +1,8 @@
 import {LitElement, html} from 'lit';
-import {customElement, state} from 'lit/decorators.js';
+import {customElement} from 'lit/decorators.js';
 
-import {getData, getEntryFromDate, setData} from '../utils/storage';
-import {getTodaysEntry, todaysDate} from '../utils/dates';
+import {todaysDate} from '../utils/dates';
+import {AppController} from '../controllers/AppController';
 
 import './calendar';
 import './upload';
@@ -10,93 +10,27 @@ import './entry';
 
 @customElement('app-component')
 class AppComponent extends LitElement {
-  constructor() {
-    super();
-    const dataFromStorage = getData();
-    if (dataFromStorage) {
-      const entries = JSON.parse(dataFromStorage) as string[][];
-      this.entries = entries;
-      this.hasTodaysEntry = !!getTodaysEntry(entries);
-    }
-  }
-
-  @state()
-  selectedDate = todaysDate();
-  @state()
-  selectedEntry = getEntryFromDate(todaysDate());
-  @state()
-  entries: string[][] = [];
-  @state()
-  hasTodaysEntry = false;
-  @state()
-  isEditable = false;
-
-  handleSelect = (e: CustomEvent<{date: string}>) => {
-    const date = e.detail.date;
-    this.selectedDate = date;
-    this.selectedEntry = getEntryFromDate(date);
-    this.isEditable = false;
-  };
-
-  handleToggleEdit = () => {
-    this.isEditable = !this.isEditable;
-  };
-
-  handleSetEntry = (e: CustomEvent<{date: string; entry: string}>) => {
-    const date = e.detail.date;
-    const entry = e.detail.entry;
-    const copiedEntries = this.entries.reduce<string[][]>(
-      (acc, entry) => [...acc, [...entry]],
-      []
-    );
-    const existingEntryIndex = copiedEntries.findIndex(
-      ([existingDate]) => existingDate === date
-    );
-    if (existingEntryIndex >= 0) {
-      copiedEntries[existingEntryIndex][1] = entry;
-    } else {
-      copiedEntries.push([date, entry]);
-    }
-    this.entries = copiedEntries;
-    setData(this.entries);
-    this.hasTodaysEntry = !!getTodaysEntry(this.entries);
-    this.selectedDate = date;
-    this.selectedEntry = entry;
-    this.isEditable = false;
-  };
+  app = new AppController(this);
 
   override render() {
     return html`
-      <upload-component></upload-component>
-      <calendar-component
-        ?hasTodaysEntry=${this.hasTodaysEntry}
-        ?isEditingTodaysDate=${this.selectedDate === todaysDate()}
-        .dates=${this.entries.map(([date]) => date).sort()}
-      ></calendar-component>
       <entry-component
-        .date=${this.selectedDate}
-        .entry=${this.selectedEntry}
-        ?isEditable=${this.isEditable}
+        .date=${this.app.selectedDate}
+        .entry=${this.app.selectedEntry}
+        ?isEditable=${this.app.isEditable}
       >
-        ${this.isEditable
-          ? html`<button @click=${this.handleToggleEdit}>Edit</button>`
+        ${this.app.isEditable
+          ? html`<button @click=${this.app.handleToggleEdit}>Edit</button>`
           : null}
       </entry-component>
+      <calendar-component
+        .selectedDate=${this.app.selectedDate}
+        ?hasTodaysEntry=${this.app.hasTodaysEntry}
+        ?isEditingTodaysDate=${this.app.selectedDate === todaysDate()}
+        .dates=${this.app.entries.map(([date]) => date).sort()}
+      ></calendar-component>
+      <upload-component></upload-component>
     `;
-  }
-
-  override connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener('clicked-date', this.handleSelect);
-    window.addEventListener('set-entry', this.handleSetEntry);
-    window.addEventListener('toggle-editable', this.handleToggleEdit);
-  }
-
-  override disconnectedCallback() {
-    window.removeEventListener('clicked-date', this.handleSelect);
-    window.removeEventListener('set-entry', this.handleSetEntry);
-    window.removeEventListener('toggle-editable', this.handleToggleEdit);
-    super.disconnectedCallback();
   }
 }
 
