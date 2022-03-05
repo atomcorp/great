@@ -1,7 +1,8 @@
 import {LitElement, html, nothing} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 
-import {viewStyles} from '../styles/view-styles';
+import viewStyles from '../styles/view-styles';
+import defaultStyles from '../styles/default-styles';
 
 type ViewType = 'today' | 'calendar' | 'settings';
 
@@ -10,7 +11,7 @@ class ViewComponent extends LitElement {
   @state()
   currentView: ViewType = 'today';
 
-  static override styles = [viewStyles];
+  static override styles = [defaultStyles, viewStyles];
 
   private _handleClick = (view: ViewType) => {
     this.currentView = view;

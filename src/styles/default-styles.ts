@@ -1,6 +1,6 @@
 import {css} from 'lit';
 
-export const viewStyles = css`
+const defaultStyles = css`
   button,
   input,
   textarea {
@@ -8,4 +8,12 @@ export const viewStyles = css`
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
       Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   }
+
+  *,
+  *:before,
+  *:after {
+    box-sizing: border-box;
+  }
 `;
+
+export default defaultStyles;

@@ -1,6 +1,6 @@
 import {css} from 'lit';
 
-export const viewStyles = css`
+const viewStyles = css`
   .view {
     height: 100%;
     display: grid;
@@ -17,5 +17,9 @@ export const viewStyles = css`
   footer {
     padding: 10px;
     order: 2;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
   }
 `;
+
+export default viewStyles;

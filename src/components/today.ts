@@ -1,14 +1,19 @@
-import {LitElement, html} from 'lit';
+import {LitElement, html, nothing} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {TodayController} from '../controllers/TodayController';
 
 import {todaysDate} from '../utils/dates';
 import {refreshAppEntries} from '../utils/events';
 
+import todayStyles from '../styles/today-styles';
+import defaultStyles from '../styles/default-styles';
+
 @customElement('today-component')
 class TodayComponent extends LitElement {
   state = new TodayController(this);
   date = todaysDate();
+
+  static override styles = [defaultStyles, todayStyles];
 
   @property({type: String})
   todaysEntry = '';
@@ -26,36 +31,61 @@ class TodayComponent extends LitElement {
     }
   };
 
+  override firstUpdated() {
+    if (!this.todaysEntry) {
+      this.renderRoot.querySelector('textarea')?.focus();
+    }
+  }
+
+  override updated() {
+    if (this.state.isEditable) {
+      this.renderRoot.querySelector('textarea')?.focus();
+    }
+  }
+
   override render() {
     if (!this.todaysEntry || this.state.isEditable) {
       // is new or can edit
       return html`
-        <h3>${this.date}</h3>
-        <form @submit=${this.handleEntry}>
-          <label>
-            <textarea
-              .value=${this.todaysEntry}
-              name="editable-entry"
-              placeholder="Write what you were grateful for today."
-            ></textarea>
-          </label>
-          <br />
-          <button>Save</button>
-          ${this.todaysEntry
-            ? html`<button @click=${this.state.handleToggleEdit} type="button">
-                Cancel
-              </button>`
-            : ''}
+        <form @submit=${this.handleEntry} class="container">
+          <h3>
+            <span class="date">${this.date}</span>
+            <button>Save</button>
+            ${this.todaysEntry
+              ? html`<button
+                  @click=${() => {
+                    this.state.handleToggleEdit();
+                  }}
+                  type="button"
+                >
+                  Cancel
+                </button>`
+              : nothing}
+          </h3>
+          <textarea
+            .value=${this.todaysEntry}
+            name="editable-entry"
+            placeholder="Write what you were grateful for today."
+            rows="3"
+          ></textarea>
         </form>
       `;
     }
     return html`
       <section>
-        <h3>${this.date}</h3>
+        <h3>
+          <span class="date">${this.date}</span>
+          <button
+            @click=${() => {
+              this.state.handleToggleEdit();
+              console.log(this.renderRoot.querySelector('textarea'));
+            }}
+            type="button"
+          >
+            Edit
+          </button>
+        </h3>
         <div>${this.todaysEntry}</div>
-        <button @click=${this.state.handleToggleEdit} type="button">
-          Edit
-        </button>
       </section>
     `;
   }
