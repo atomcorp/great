@@ -2,10 +2,9 @@ import {localStorageKeys} from '../consts';
 
 export const getEntryFromDate = (date: string): string => {
   if (date) {
-    const localStorageData = localStorage.getItem(localStorageKeys.data);
-    if (localStorageData) {
-      const jsData = JSON.parse(localStorageData);
-      const entryData = jsData.find((entry: string[]) => entry[0] === date);
+    const entries = getEntries();
+    if (entries) {
+      const entryData = entries.find((entry: string[]) => entry[0] === date);
       if (Array.isArray(entryData)) {
         return entryData[1];
       }
@@ -24,4 +23,13 @@ export const getData = (): string => {
 
 export const setData = (data: string[][]) => {
   localStorage.setItem(localStorageKeys.data, JSON.stringify(data));
+};
+
+export const getEntries = () => {
+  const dataFromStorage = getData();
+  if (dataFromStorage) {
+    const entries = JSON.parse(dataFromStorage) as string[][];
+    return entries;
+  }
+  return [];
 };

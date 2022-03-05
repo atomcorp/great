@@ -1,47 +1,65 @@
 import {LitElement, html} from 'lit';
-import {customElement, property} from 'lit/decorators.js';
+import {customElement} from 'lit/decorators.js';
+import {CalendarController} from '../controllers/CalendarController';
 
-import {todaysDate} from '../utils/dates';
 @customElement('calendar-component')
 class CalendarComponent extends LitElement {
-  @property({type: Array})
-  dates: string[];
-  @property({type: Boolean})
-  hasTodaysEntry = false;
-  @property({type: Boolean})
-  isEditingTodaysDate = false;
-  @property({type: String})
-  selectedDate: string;
+  state = new CalendarController(this);
 
-  handleDate = (date: string) => {
-    const event = new CustomEvent('clicked-date', {
-      detail: {date},
-      bubbles: true,
-      composed: true,
-    });
-    this.dispatchEvent(event);
+  private _handleSubmit = (e: Event, date: string) => {
+    e.preventDefault();
+    const formElement = e.target as HTMLFormElement;
+    if (formElement) {
+      const formData = new FormData(formElement);
+      const entry = formData.get('editable-entry');
+      if (typeof entry === 'string') {
+        this.state.handleSetEntry(date, entry);
+      }
+    }
   };
 
   override render() {
-    if (Array.isArray(this.dates)) {
+    console.log(this.state.isEditing, this.state.selectedDate);
+    if (Array.isArray(this.state.entries)) {
       return html`
         <section>
           <h3>Dates</h3>
           <ul>
-            ${this.dates.map(
-              (date) =>
-                html`<li @click=${() => this.handleDate(date)}>
-                  ${date === this.selectedDate
+            ${this.state.entries.map(
+              ([date, entry]) =>
+                html`<li>
+                  ${date === this.state.selectedDate
                     ? html`<strong>${date}</strong>`
                     : date}
+                  ${this.state.isEditing && date === this.state.selectedDate
+                    ? html`<form
+                        @submit=${(e: Event) => {
+                          this._handleSubmit(e, date);
+                        }}
+                      >
+                        <textarea
+                          .value=${entry}
+                          name="editable-entry"
+                          placeholder="Write what you were grateful for today."
+                        ></textarea>
+                        <button>Save</button>
+                        <button
+                          type="button"
+                          @click=${this.state.handleCancelEdit}
+                        >
+                          Cancel
+                        </button>
+                      </form>`
+                    : html`<p>${entry}</p>
+                        <button
+                          @click=${() =>
+                            this.state.handleEditEntry(date, entry)}
+                        >
+                          Edit
+                        </button>`}
                 </li>`
             )}
           </ul>
-          ${!this.hasTodaysEntry && !this.isEditingTodaysDate
-            ? html`<button @click=${() => this.handleDate(todaysDate())}>
-                Add todays
-              </button>`
-            : ''}
         </section>
       `;
     }
@@ -51,9 +69,6 @@ class CalendarComponent extends LitElement {
 declare global {
   interface HTMLElementTagNameMap {
     'calendar-component': CalendarComponent;
-  }
-  interface WindowEventMap {
-    'clicked-date': CustomEvent<{date: string}>;
   }
 }
 
