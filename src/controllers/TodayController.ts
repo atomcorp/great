@@ -1,12 +1,11 @@
 import {ReactiveController, ReactiveControllerHost} from 'lit';
 
-import {getTodaysEntry, todaysDate} from '../utils/dates';
+import {todaysDate} from '../utils/dates';
 import {getEntries, setData} from '../utils/storage';
 
 export class TodayController implements ReactiveController {
   host: ReactiveControllerHost;
 
-  entry = '';
   isEditable = false;
 
   constructor(host: ReactiveControllerHost) {
@@ -14,20 +13,11 @@ export class TodayController implements ReactiveController {
   }
 
   hostConnected() {
-    this._handleInit();
+    // do nothing
   }
 
   public handleToggleEdit = () => {
     this.isEditable = !this.isEditable;
-    this.host.requestUpdate();
-  };
-
-  private _handleInit = () => {
-    const entries = getEntries();
-    if (entries) {
-      const todaysEntry = getTodaysEntry(entries);
-      this.entry = todaysEntry ? todaysEntry[1] : '';
-    }
     this.host.requestUpdate();
   };
 
@@ -40,10 +30,9 @@ export class TodayController implements ReactiveController {
     if (existingEntryIndex >= 0) {
       entries[existingEntryIndex][1] = entry;
     } else {
-      entries.push([today, entry]);
+      entries.unshift([today, entry]);
     }
-    setData(entries);
-    this.entry = entry;
+    setData(entries.sort((a, b) => (a[0] < b[0] ? 1 : -1)));
     this.isEditable = false;
     this.host.requestUpdate();
   };

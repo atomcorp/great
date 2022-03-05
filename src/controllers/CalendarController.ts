@@ -7,12 +7,10 @@ export class CalendarController implements ReactiveController {
 
   selectedDate = '';
   selectedEntry = '';
-  entries: string[][] = [];
   isEditing = false;
 
   constructor(host: ReactiveControllerHost) {
     (this.host = host).addController(this);
-    this._handleInit();
   }
 
   hostConnected() {
@@ -23,7 +21,6 @@ export class CalendarController implements ReactiveController {
   }
 
   public handleCancelEdit = () => {
-    console.log('click');
     this.isEditing = false;
     this.selectedDate = '';
     this.selectedEntry = '';
@@ -37,32 +34,17 @@ export class CalendarController implements ReactiveController {
     this.host.requestUpdate();
   };
 
-  private _handleInit = () => {
-    const entries = getEntries();
-    if (entries) {
-      this.entries = this._sortEntries(entries);
-    }
-    this.host.requestUpdate();
-  };
-
-  private _sortEntries = (entries: string[][]) =>
-    entries.sort((a, b) => (a[0] > b[0] ? 1 : 0));
-
   public handleSetEntry = (date: string, entry: string) => {
-    const copiedEntries = this.entries.reduce<string[][]>(
-      (acc, entry) => [...acc, [...entry]],
-      []
-    );
-    const existingEntryIndex = copiedEntries.findIndex(
+    const entries = getEntries();
+    const existingEntryIndex = entries.findIndex(
       ([existingDate]) => existingDate === date
     );
     if (existingEntryIndex >= 0) {
-      copiedEntries[existingEntryIndex][1] = entry;
+      entries[existingEntryIndex][1] = entry;
     } else {
-      copiedEntries.push([date, entry]);
+      entries.unshift([date, entry]);
     }
-    this.entries = this._sortEntries(copiedEntries);
-    setData(this.entries);
+    setData(entries.sort((a, b) => (a[0] < b[0] ? 1 : -1)));
     this.selectedDate = '';
     this.selectedEntry = '';
     this.isEditing = false;

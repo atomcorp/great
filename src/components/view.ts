@@ -18,7 +18,7 @@ class ViewComponent extends LitElement {
 
   override render() {
     return html`
-      <div class="view">
+      <div id="view" class="view">
         <footer>
           <button
             type="button"

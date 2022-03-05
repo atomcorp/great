@@ -1,10 +1,14 @@
 import {LitElement, html} from 'lit';
-import {customElement} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import {CalendarController} from '../controllers/CalendarController';
+import {refreshAppEntries} from '../utils/events';
 
 @customElement('calendar-component')
 class CalendarComponent extends LitElement {
   state = new CalendarController(this);
+
+  @property({type: Array})
+  entries: string[][] = [];
 
   private _handleSubmit = (e: Event, date: string) => {
     e.preventDefault();
@@ -14,18 +18,18 @@ class CalendarComponent extends LitElement {
       const entry = formData.get('editable-entry');
       if (typeof entry === 'string') {
         this.state.handleSetEntry(date, entry);
+        refreshAppEntries(formElement);
       }
     }
   };
 
   override render() {
-    console.log(this.state.isEditing, this.state.selectedDate);
-    if (Array.isArray(this.state.entries)) {
+    if (Array.isArray(this.entries)) {
       return html`
         <section>
           <h3>Dates</h3>
           <ul>
-            ${this.state.entries.map(
+            ${this.entries.map(
               ([date, entry]) =>
                 html`<li>
                   ${date === this.state.selectedDate

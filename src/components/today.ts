@@ -1,18 +1,17 @@
 import {LitElement, html} from 'lit';
-import {customElement} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import {TodayController} from '../controllers/TodayController';
 
 import {todaysDate} from '../utils/dates';
+import {refreshAppEntries} from '../utils/events';
 
 @customElement('today-component')
 class TodayComponent extends LitElement {
   state = new TodayController(this);
   date = todaysDate();
 
-  constructor() {
-    super();
-    console.log('hello');
-  }
+  @property({type: String})
+  todaysEntry = '';
 
   handleEntry = (e: Event) => {
     e.preventDefault();
@@ -22,26 +21,27 @@ class TodayComponent extends LitElement {
       const entry = formData.get('editable-entry');
       if (typeof entry === 'string') {
         this.state.handleSetEntry(entry);
+        refreshAppEntries(formElement);
       }
     }
   };
 
   override render() {
-    if (!this.state.entry || this.state.isEditable) {
+    if (!this.todaysEntry || this.state.isEditable) {
       // is new or can edit
       return html`
         <h3>${this.date}</h3>
         <form @submit=${this.handleEntry}>
           <label>
             <textarea
-              .value=${this.state.entry}
+              .value=${this.todaysEntry}
               name="editable-entry"
               placeholder="Write what you were grateful for today."
             ></textarea>
           </label>
           <br />
           <button>Save</button>
-          ${this.state.entry
+          ${this.todaysEntry
             ? html`<button @click=${this.state.handleToggleEdit} type="button">
                 Cancel
               </button>`
@@ -52,7 +52,7 @@ class TodayComponent extends LitElement {
     return html`
       <section>
         <h3>${this.date}</h3>
-        <div>${this.state.entry}</div>
+        <div>${this.todaysEntry}</div>
         <button @click=${this.state.handleToggleEdit} type="button">
           Edit
         </button>

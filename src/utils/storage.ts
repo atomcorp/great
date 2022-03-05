@@ -1,4 +1,5 @@
 import {localStorageKeys} from '../consts';
+import {todaysDate} from './dates';
 
 export const getEntryFromDate = (date: string): string => {
   if (date) {
@@ -29,7 +30,18 @@ export const getEntries = () => {
   const dataFromStorage = getData();
   if (dataFromStorage) {
     const entries = JSON.parse(dataFromStorage) as string[][];
-    return entries;
+    return entries.sort((a, b) => (a[0] < b[0] ? 1 : -1));
   }
   return [];
+};
+
+export const getTodaysEntry = () => {
+  const entries = getEntries();
+  if (entries) {
+    const todaysEntry = entries.find(([date]) => date === todaysDate());
+    if (Array.isArray(todaysEntry)) {
+      return todaysEntry[1];
+    }
+  }
+  return '';
 };

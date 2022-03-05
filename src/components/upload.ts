@@ -3,6 +3,7 @@ import {customElement, state} from 'lit/decorators.js';
 import Papa from 'papaparse';
 
 import {localStorageKeys, eventKeys} from '../consts';
+import {refreshAppEntries} from '../utils/events';
 
 @customElement('upload-component')
 class UploadComponent extends LitElement {
@@ -36,6 +37,7 @@ class UploadComponent extends LitElement {
             composed: true,
           });
           formElement.dispatchEvent(event);
+          refreshAppEntries(formElement);
         }
       }
     };
