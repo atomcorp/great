@@ -7,6 +7,17 @@ import todayStyles from '../styles/today-styles';
 import defaultStyles from '../styles/default-styles';
 
 import './layout';
+import {getDisplayDate, todaysDate, yesterdaysDate} from '../utils/dates';
+
+const getPlaceholder = (date: string) => {
+  if (date === todaysDate()) {
+    return 'Write what you were grateful for today?';
+  }
+  if (date === yesterdaysDate()) {
+    return 'Write what you were grateful for yesterday?';
+  }
+  return `Write what you were grateful for on ${getDisplayDate(date)}?`;
+};
 
 @customElement('entry-component')
 class EntryComponent extends LitElement {
@@ -56,7 +67,7 @@ class EntryComponent extends LitElement {
               .value=${this.entry}
               id="editable-entry"
               name="editable-entry"
-              placeholder="Write what you were grateful for today..."
+              placeholder=${getPlaceholder(this.date)}
               rows="3"
             ></textarea>
           </section>

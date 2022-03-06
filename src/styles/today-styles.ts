@@ -13,9 +13,6 @@ const todayStyles = css`
     padding: 10px;
     height: 100%;
   }
-  button {
-    margin: 0 0 0 10px;
-  }
   .container {
     display: flex;
     flex-direction: column;

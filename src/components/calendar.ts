@@ -1,14 +1,23 @@
-import {LitElement, html} from 'lit';
+import {LitElement, html, nothing} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 
 import {CalendarController} from '../controllers/CalendarController';
-import {getDisplayDate, todaysDate} from '../utils/dates';
+import {getDisplayDate, todaysDate, yesterdaysDate} from '../utils/dates';
 import {uploadedNewData, setCurrentEntry, setView} from '../utils/events';
-import {getTodaysEntry} from '../utils/storage';
 
 import defaultStyles from '../styles/default-styles';
 
 import './layout';
+
+const hasTodaysEntry = (entries: string[][]) => {
+  const todaysEntry = entries.find(([date]) => date === todaysDate());
+  return !!todaysEntry;
+};
+
+const hasYesterDaysEntry = (entries: string[][]) => {
+  const todaysEntry = entries.find(([date]) => date === yesterdaysDate());
+  return !!todaysEntry;
+};
 
 @customElement('calendar-component')
 class CalendarComponent extends LitElement {
@@ -39,6 +48,26 @@ class CalendarComponent extends LitElement {
           <section slot="main">
             <h3>History</h3>
             <ul>
+              ${!hasTodaysEntry(this.entries)
+                ? html`<button
+                    @click=${(e: Event) => {
+                      const el = e.target as HTMLElement;
+                      setCurrentEntry(el, todaysDate(), '');
+                    }}
+                  >
+                    Add todays entry
+                  </button>`
+                : nothing}
+              ${!hasYesterDaysEntry(this.entries)
+                ? html`<button
+                    @click=${(e: Event) => {
+                      const el = e.target as HTMLElement;
+                      setCurrentEntry(el, yesterdaysDate(), '');
+                    }}
+                  >
+                    Add Yesterdays entry
+                  </button>`
+                : nothing}
               ${this.entries.map(
                 ([date, entry]) =>
                   html`<li>
@@ -78,14 +107,6 @@ class CalendarComponent extends LitElement {
             </ul>
           </section>
           <section slot="footer">
-            <button
-              @click=${(e: Event) => {
-                const el = e.target as HTMLElement;
-                setCurrentEntry(el, todaysDate(), getTodaysEntry());
-              }}
-            >
-              Today
-            </button>
             <button type="button" disabled>Calendar</button>
             <button
               type="button"

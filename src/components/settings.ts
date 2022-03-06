@@ -3,14 +3,15 @@ import {customElement, state} from 'lit/decorators.js';
 import Papa from 'papaparse';
 
 import {localStorageKeys, eventKeys} from '../consts';
-import {todaysDate} from '../utils/dates';
-import {refreshAppEntries, setCurrentEntry, setView} from '../utils/events';
-import {getTodaysEntry} from '../utils/storage';
+import {refreshAppEntries, setView} from '../utils/events';
+
+import defaultStyles from '../styles/default-styles';
 
 import './layout';
 
 @customElement('upload-component')
 class UploadComponent extends LitElement {
+  static override styles = [defaultStyles];
   @state()
   hasUploaded = false;
 
@@ -66,14 +67,6 @@ class UploadComponent extends LitElement {
         </section>
         <section slot="footer">
           <section slot="footer">
-            <button
-              @click=${(e: Event) => {
-                const el = e.target as HTMLElement;
-                setCurrentEntry(el, todaysDate(), getTodaysEntry());
-              }}
-            >
-              Today
-            </button>
             <button
               type="button"
               @click=${(e: Event) => {

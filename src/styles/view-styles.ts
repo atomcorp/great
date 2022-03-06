@@ -17,8 +17,6 @@ const viewStyles = css`
   footer {
     padding: 10px;
     order: 2;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
   }
 `;
 
