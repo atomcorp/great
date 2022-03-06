@@ -4,7 +4,7 @@ import {customElement} from 'lit/decorators.js';
 import {AppController, ViewType} from '../controllers/AppController';
 
 import './calendar';
-import './upload';
+import './settings';
 import './view';
 import './entry';
 

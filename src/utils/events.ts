@@ -42,3 +42,11 @@ export const saveCurrentEntry = (
   });
   el.dispatchEvent(event);
 };
+
+export const uploadedNewData = (el: HTMLElement) => {
+  const event = new CustomEvent('app--uploaded-new-data', {
+    bubbles: true,
+    composed: true,
+  });
+  el.dispatchEvent(event);
+};

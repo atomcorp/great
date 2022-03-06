@@ -3,7 +3,11 @@ import {customElement, state} from 'lit/decorators.js';
 import Papa from 'papaparse';
 
 import {localStorageKeys, eventKeys} from '../consts';
-import {refreshAppEntries} from '../utils/events';
+import {todaysDate} from '../utils/dates';
+import {refreshAppEntries, setCurrentEntry, setView} from '../utils/events';
+import {getTodaysEntry} from '../utils/storage';
+
+import './layout';
 
 @customElement('upload-component')
 class UploadComponent extends LitElement {
@@ -46,19 +50,43 @@ class UploadComponent extends LitElement {
 
   override render() {
     return html`
-      <section>
-        <h3>Upload</h3>
-        <p>
-          Should be a csv, with two fields: entryDate (yyyy-mm-dd) and
-          entryContent. Will remove header with those names.
-        </p>
-        <form @submit=${this.handleSubmit}>
-          <label>Choose a file to upload</label>
-          <input id="upload" type="file" accept=".csv" name="data" />
-          <button>Upload</button>
-        </form>
-        ${this.hasUploaded ? html`<strong>Upload success</strong>` : ''}
-      </section>
+      <layout-component>
+        <section slot="main">
+          <h3>Upload</h3>
+          <p>
+            Should be a csv, with two fields: entryDate (yyyy-mm-dd) and
+            entryContent. Will remove header with those names.
+          </p>
+          <form @submit=${this.handleSubmit}>
+            <label>Choose a file to upload</label>
+            <input id="upload" type="file" accept=".csv" name="data" />
+            <button>Upload</button>
+          </form>
+          ${this.hasUploaded ? html`<strong>Upload success</strong>` : ''}
+        </section>
+        <section slot="footer">
+          <section slot="footer">
+            <button
+              @click=${(e: Event) => {
+                const el = e.target as HTMLElement;
+                setCurrentEntry(el, todaysDate(), getTodaysEntry());
+              }}
+            >
+              Today
+            </button>
+            <button
+              type="button"
+              @click=${(e: Event) => {
+                const el = e.target as HTMLButtonElement;
+                setView(el, 'calendar');
+              }}
+            >
+              Calendar
+            </button>
+            <button type="button" disabled>Settings</button>
+          </section>
+        </section>
+      </layout-component>
     `;
   }
 }

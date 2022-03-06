@@ -11,7 +11,7 @@ export class AppController implements ReactiveController {
   entries: string[][] = getEntries();
   currentEntry = getTodaysEntry();
   currentDate = todaysDate();
-  view: ViewType = 'entry';
+  view: ViewType = getTodaysEntry() ? 'calendar' : 'entry';
 
   constructor(host: ReactiveControllerHost) {
     (this.host = host).addController(this);
@@ -20,6 +20,7 @@ export class AppController implements ReactiveController {
   hostConnected() {
     //  when the host is connected
     window.addEventListener('app--refresh-entries', this._refreshEntries);
+    window.addEventListener('app--uploaded-new-data', this._uploadedNewData);
     window.addEventListener('app--set-view', this._setView);
     window.addEventListener('app--set-current-entry', this._setCurrentEntry);
     window.addEventListener('app--save-current-entry', this._saveCurrentEntry);
@@ -27,6 +28,7 @@ export class AppController implements ReactiveController {
   hostDisconnected() {
     // when the host is disconnected
     window.removeEventListener('app--refresh-entries', this._refreshEntries);
+    window.removeEventListener('app--uploaded-new-data', this._uploadedNewData);
     window.removeEventListener('app--set-view', this._setView);
     window.removeEventListener('app--set-current-entry', this._setCurrentEntry);
     window.removeEventListener(
@@ -73,6 +75,13 @@ export class AppController implements ReactiveController {
     this.currentEntry = event.detail.entry;
     this.currentDate = event.detail.date;
     this.entries = entries;
+    this.host.requestUpdate();
+  };
+
+  private _uploadedNewData = () => {
+    this.entries = getEntries();
+    this.currentEntry = getTodaysEntry();
+    this.currentDate = todaysDate();
     this.host.requestUpdate();
   };
 }

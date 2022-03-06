@@ -1,6 +1,5 @@
 import {LitElement, html, nothing} from 'lit';
-import {customElement, property} from 'lit/decorators.js';
-import {TodayController} from '../controllers/TodayController';
+import {customElement, property, state} from 'lit/decorators.js';
 
 import {saveCurrentEntry, setView} from '../utils/events';
 
@@ -11,21 +10,21 @@ import './layout';
 
 @customElement('entry-component')
 class EntryComponent extends LitElement {
-  state = new TodayController(this);
-
   static override styles = [defaultStyles, todayStyles];
 
   @property({type: String})
   entry = '';
   @property({type: String})
   date = '';
+  @state()
+  isEditable = false;
 
   private _handleSave = () => {
     const el = this.renderRoot.querySelector(
       '#editable-entry'
     ) as HTMLTextAreaElement;
     saveCurrentEntry(el, this.date, el.value);
-    this.state.handleToggleEdit();
+    this.isEditable = false;
   };
 
   override firstUpdated() {
@@ -35,13 +34,17 @@ class EntryComponent extends LitElement {
   }
 
   override updated() {
-    if (this.state.isEditable) {
+    if (this.isEditable) {
       this.renderRoot.querySelector('textarea')?.focus();
     }
   }
 
+  private _toggleIsEditable = () => {
+    this.isEditable = !this.isEditable;
+  };
+
   override render() {
-    if (!this.entry || this.state.isEditable) {
+    if (!this.entry || this.isEditable) {
       // is new or can edit
       return html`
         <layout-component>
@@ -71,7 +74,7 @@ class EntryComponent extends LitElement {
             ${this.entry
               ? html`<button
                   @click=${() => {
-                    this.state.handleToggleEdit();
+                    this._toggleIsEditable();
                   }}
                   type="button"
                 >
@@ -102,7 +105,7 @@ class EntryComponent extends LitElement {
           </button>
           <button
             @click=${() => {
-              this.state.handleToggleEdit();
+              this._toggleIsEditable();
             }}
             type="button"
           >
