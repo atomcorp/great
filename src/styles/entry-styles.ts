@@ -1,6 +1,6 @@
 import {css} from 'lit';
 
-const todayStyles = css`
+const entryStyles = css`
   h3 {
     margin: 0 0 10px;
     display: flex;
@@ -18,6 +18,9 @@ const todayStyles = css`
     flex-direction: column;
     height: 100%;
   }
+  .entry {
+    white-space: pre-wrap;
+  }
 `;
 
-export default todayStyles;
+export default entryStyles;

@@ -3,25 +3,25 @@ import {customElement, property, state} from 'lit/decorators.js';
 
 import {saveCurrentEntry, setView} from '../utils/events';
 
-import todayStyles from '../styles/today-styles';
+import entryStyles from '../styles/entry-styles';
 import defaultStyles from '../styles/default-styles';
 
 import './layout';
 import {getDisplayDate, todaysDate, yesterdaysDate} from '../utils/dates';
 
-const getPlaceholder = (date: string) => {
+const getHeading = (date: string) => {
   if (date === todaysDate()) {
-    return 'Write what you were grateful for today?';
+    return html`<h3>Today<br />I am grateful for</h3>`;
   }
   if (date === yesterdaysDate()) {
-    return 'Write what you were grateful for yesterday?';
+    return html`<h3>Yesterday<br />I was grateful for</h3>`;
   }
-  return `Write what you were grateful for on ${getDisplayDate(date)}?`;
+  return html`<h3>${getDisplayDate(date)}<br />I was grateful for</h3>`;
 };
 
 @customElement('entry-component')
 class EntryComponent extends LitElement {
-  static override styles = [defaultStyles, todayStyles];
+  static override styles = [defaultStyles, entryStyles];
 
   @property({type: String})
   entry = '';
@@ -40,13 +40,17 @@ class EntryComponent extends LitElement {
 
   override firstUpdated() {
     if (!this.entry) {
-      this.renderRoot.querySelector('textarea')?.focus();
+      this.updateComplete.then(() => {
+        this.renderRoot.querySelector('textarea')?.focus();
+      });
     }
   }
 
   override updated() {
     if (this.isEditable) {
-      this.renderRoot.querySelector('textarea')?.focus();
+      this.updateComplete.then(() => {
+        this.renderRoot.querySelector('textarea')?.focus();
+      });
     }
   }
 
@@ -55,19 +59,18 @@ class EntryComponent extends LitElement {
   };
 
   override render() {
+    console.log(this.isEditable);
     if (!this.entry || this.isEditable) {
       // is new or can edit
       return html`
         <layout-component>
           <section slot="main" class="container">
-            <h3>
-              <span class="date">${this.date}</span>
-            </h3>
+            ${getHeading(this.date)}
             <textarea
               .value=${this.entry}
               id="editable-entry"
               name="editable-entry"
-              placeholder=${getPlaceholder(this.date)}
+              placeholder="What are you grateful for?"
               rows="3"
             ></textarea>
           </section>
@@ -75,6 +78,9 @@ class EntryComponent extends LitElement {
             <button
               type="button"
               @click=${(e: Event) => {
+                if (this.isEditable) {
+                  this.isEditable = false;
+                }
                 const el = e.target as HTMLButtonElement;
                 setView(el, 'calendar');
               }}
@@ -99,10 +105,8 @@ class EntryComponent extends LitElement {
     return html`
       <layout-component>
         <section slot="main">
-          <h3>
-            <span class="date">${this.date}</span>
-          </h3>
-          <div>${this.entry}</div>
+          ${getHeading(this.date)}
+          <div class="entry">${this.entry}</div>
         </section>
         <footer slot="footer">
           <button
