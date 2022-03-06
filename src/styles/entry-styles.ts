@@ -21,6 +21,11 @@ const entryStyles = css`
   .entry {
     white-space: pre-wrap;
   }
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    gap: 10px;
+  }
 `;
 
 export default entryStyles;

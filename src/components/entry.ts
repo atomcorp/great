@@ -5,6 +5,7 @@ import {saveCurrentEntry, setView} from '../utils/events';
 
 import entryStyles from '../styles/entry-styles';
 import defaultStyles from '../styles/default-styles';
+import footerStyles from '../styles/footer-styles';
 
 import './layout';
 import {getDisplayDate, todaysDate, yesterdaysDate} from '../utils/dates';
@@ -21,7 +22,7 @@ const getHeading = (date: string) => {
 
 @customElement('entry-component')
 class EntryComponent extends LitElement {
-  static override styles = [defaultStyles, entryStyles];
+  static override styles = [defaultStyles, footerStyles, entryStyles];
 
   @property({type: String})
   entry = '';
@@ -87,17 +88,19 @@ class EntryComponent extends LitElement {
             >
               Calendar
             </button>
-            <button type="button" @click=${this._handleSave}>Save</button>
-            ${this.entry
-              ? html`<button
-                  @click=${() => {
-                    this._toggleIsEditable();
-                  }}
-                  type="button"
-                >
-                  Cancel
-                </button>`
-              : nothing}
+            <div class="buttons">
+              <button type="button" @click=${this._handleSave}>Save</button>
+              ${this.entry
+                ? html`<button
+                    @click=${() => {
+                      this._toggleIsEditable();
+                    }}
+                    type="button"
+                  >
+                    Cancel
+                  </button>`
+                : nothing}
+            </div>
           </footer>
         </layout-component>
       `;
