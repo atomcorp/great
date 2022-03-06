@@ -1,7 +1,8 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {CalendarController} from '../controllers/CalendarController';
-import {refreshAppEntries} from '../utils/events';
+import {getDisplayDate} from '../utils/dates';
+import {refreshAppEntries, setCurrentEntry} from '../utils/events';
 
 @customElement('calendar-component')
 class CalendarComponent extends LitElement {
@@ -27,14 +28,14 @@ class CalendarComponent extends LitElement {
     if (Array.isArray(this.entries)) {
       return html`
         <section>
-          <h3>Dates</h3>
+          <h3>History</h3>
           <ul>
             ${this.entries.map(
               ([date, entry]) =>
                 html`<li>
                   ${date === this.state.selectedDate
-                    ? html`<strong>${date}</strong>`
-                    : date}
+                    ? html`<strong>${getDisplayDate(date)}</strong>`
+                    : getDisplayDate(date)}
                   ${this.state.isEditing && date === this.state.selectedDate
                     ? html`<form
                         @submit=${(e: Event) => {
@@ -56,8 +57,10 @@ class CalendarComponent extends LitElement {
                       </form>`
                     : html`<p>${entry}</p>
                         <button
-                          @click=${() =>
-                            this.state.handleEditEntry(date, entry)}
+                          @click=${(e: Event) => {
+                            const el = e.target as HTMLElement;
+                            setCurrentEntry(el, date, entry);
+                          }}
                         >
                           Edit
                         </button>`}

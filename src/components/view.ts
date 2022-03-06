@@ -1,63 +1,24 @@
 import {LitElement, html, nothing} from 'lit';
-import {customElement, state} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 
-import viewStyles from '../styles/view-styles';
-import defaultStyles from '../styles/default-styles';
-
-type ViewType = 'today' | 'calendar' | 'settings';
+import {ViewType} from '../controllers/AppController';
 
 @customElement('view-component')
 class ViewComponent extends LitElement {
-  @state()
-  currentView: ViewType = 'today';
-
-  static override styles = [defaultStyles, viewStyles];
-
-  private _handleClick = (view: ViewType) => {
-    this.currentView = view;
-  };
+  @property({type: String})
+  view: ViewType = 'entry';
 
   override render() {
     return html`
-      <div id="view" class="view">
-        <footer>
-          <button
-            type="button"
-            @click=${() => {
-              this._handleClick('today');
-            }}
-          >
-            Today
-          </button>
-          <button
-            type="button"
-            @click=${() => {
-              this._handleClick('calendar');
-            }}
-          >
-            Calendar
-          </button>
-          <button
-            type="button"
-            @click=${() => {
-              this._handleClick('settings');
-            }}
-          >
-            Settings
-          </button>
-        </footer>
-        <main>
-          ${this.currentView === 'today'
-            ? html`<slot name="today">Today view</slot>`
-            : nothing}
-          ${this.currentView === 'calendar'
-            ? html`<slot name="calendar">Calendar view</slot>`
-            : nothing}
-          ${this.currentView === 'settings'
-            ? html`<slot name="settings">Settings view</slot>`
-            : nothing}
-        </main>
-      </div>
+      ${this.view === 'entry'
+        ? html`<slot name="entry">Entry view</slot>`
+        : nothing}
+      ${this.view === 'calendar'
+        ? html`<slot name="calendar">Calendar view</slot>`
+        : nothing}
+      ${this.view === 'settings'
+        ? html`<slot name="settings">Settings view</slot>`
+        : nothing}
     `;
   }
 }

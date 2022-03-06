@@ -1,12 +1,12 @@
 import {LitElement, html} from 'lit';
 import {customElement} from 'lit/decorators.js';
 
-import {AppController} from '../controllers/AppController';
+import {AppController, ViewType} from '../controllers/AppController';
 
 import './calendar';
 import './upload';
-import './today';
 import './view';
+import './entry';
 
 @customElement('app-component')
 class AppComponent extends LitElement {
@@ -14,11 +14,12 @@ class AppComponent extends LitElement {
 
   override render() {
     return html`
-      <view-component>
-        <today-component
-          slot="today"
-          .todaysEntry=${this.state.todaysEntry}
-        ></today-component>
+      <view-component .view=${this.state.view}>
+        <entry-component
+          slot="entry"
+          .entry=${this.state.currentEntry}
+          .date=${this.state.currentDate}
+        ></entry-component>
         <calendar-component
           .entries=${this.state.entries}
           slot="calendar"
@@ -35,6 +36,13 @@ declare global {
   }
   interface WindowEventMap {
     'app--refresh-entries': CustomEvent;
+    'app--set-view': CustomEvent<{detail: {view: ViewType}}>;
+    'app--set-current-entry': CustomEvent<{
+      detail: {date: string; entry: string};
+    }>;
+    'app--save-current-entry': CustomEvent<{
+      detail: {date: string; entry: string};
+    }>;
   }
 }
 
