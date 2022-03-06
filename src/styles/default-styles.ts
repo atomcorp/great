@@ -2,11 +2,8 @@ import {css} from 'lit';
 
 const defaultStyles = css`
   button,
-  button:focus,
   input,
-  input:focus,
-  textarea,
-  textarea:focus {
+  textarea {
     font-size: 18px;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
       Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;

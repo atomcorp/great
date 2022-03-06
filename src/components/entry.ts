@@ -39,21 +39,21 @@ class EntryComponent extends LitElement {
     this.isEditable = false;
   };
 
-  override firstUpdated() {
-    if (!this.entry) {
-      this.updateComplete.then(() => {
-        this.renderRoot.querySelector('textarea')?.focus();
-      });
-    }
-  }
+  // override firstUpdated() {
+  //   if (!this.entry) {
+  //     this.updateComplete.then(() => {
+  //       this.renderRoot.querySelector('textarea')?.focus();
+  //     });
+  //   }
+  // }
 
-  override updated() {
-    if (this.isEditable) {
-      this.updateComplete.then(() => {
-        this.renderRoot.querySelector('textarea')?.focus();
-      });
-    }
-  }
+  // override updated() {
+  //   if (this.isEditable) {
+  //     this.updateComplete.then(() => {
+  //       this.renderRoot.querySelector('textarea')?.focus();
+  //     });
+  //   }
+  // }
 
   private _toggleIsEditable = () => {
     this.isEditable = !this.isEditable;
