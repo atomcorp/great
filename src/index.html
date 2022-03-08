@@ -22,6 +22,31 @@
         box-sizing: border-box;
       }
     </style>
+    <script>
+      const exampleData = [
+        ['2022-03-02', 'Welcome to Today Was A Great Day 👍'],
+        ['2022-03-01', 'It is a gratitude journal'],
+        ['2022-02-27', 'This is the demo version'],
+        [
+          '2022-02-17',
+          'So you can save and edit stuff temporarily, but when you refresh the page your changes will be wiped',
+        ],
+        ['2022-02-16', 'You can edit previous thoughts by clicking on them'],
+        [
+          '2022-02-15',
+          "You also can quickly add today or yesterday's thought if it's missing",
+        ],
+        [
+          '2022-02-14',
+          'I need to add a date picker or something to add other dates you may have missed',
+        ],
+        [
+          '2021-11-12',
+          'Go to great-ten.vercel.app for your own gratitude journal',
+        ],
+      ];
+      localStorage.setItem('data', JSON.stringify(exampleData));
+    </script>
   </head>
   <body>
     <app-component></app-component>

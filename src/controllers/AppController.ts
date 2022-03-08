@@ -11,7 +11,7 @@ export class AppController implements ReactiveController {
   entries: string[][] = getEntries();
   currentEntry = getTodaysEntry();
   currentDate = todaysDate();
-  view: ViewType = getTodaysEntry() ? 'calendar' : 'entry';
+  view: ViewType = 'calendar';
 
   constructor(host: ReactiveControllerHost) {
     (this.host = host).addController(this);
