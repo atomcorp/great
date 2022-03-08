@@ -39,6 +39,7 @@ class EntryComponent extends LitElement {
     this.isEditable = false;
   };
 
+  // TODO:  fix iOS Safari zoom
   // override firstUpdated() {
   //   if (!this.entry) {
   //     this.updateComplete.then(() => {
