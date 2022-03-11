@@ -16,7 +16,7 @@ The data is kept in the same format as Presently, CSV with the headings entryDat
 
 ## Todo
 
+- [ ] Some testing to ensure changes don't wipe people's precious thoughts
 - [ ] Some actual styling
-- [ ] Some testing to ensure changes don't wipe peoples precious thoughts
 - [ ] Backup entries
 - [ ] Wipe entries
