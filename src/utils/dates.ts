@@ -11,7 +11,7 @@ export const todaysDate = () => new Date().toISOString().substring(0, 10);
 
 export const previousDaysDate = (date: string): string => {
   const dateObj = parseDate(date);
-  dateObj.setDate(dateObj.getDate() - 1);
+  dateObj.setUTCDate(dateObj.getDate() - 1);
   return dateObj.toISOString().substring(0, 10);
 };
 

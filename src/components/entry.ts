@@ -12,10 +12,14 @@ import {getDisplayDate, todaysDate, yesterdaysDate} from '../utils/dates';
 
 const getHeading = (date: string) => {
   if (date === todaysDate()) {
-    return html`<h3>Today<br />I am grateful for</h3>`;
+    return html`<h3>
+      Today (${getDisplayDate(date)})<br />I am grateful for
+    </h3>`;
   }
   if (date === yesterdaysDate()) {
-    return html`<h3>Yesterday<br />I was grateful for</h3>`;
+    return html`<h3>
+      Yesterday (${getDisplayDate(date)})<br />I was grateful for
+    </h3>`;
   }
   return html`<h3>${getDisplayDate(date)}<br />I was grateful for</h3>`;
 };
@@ -61,7 +65,6 @@ class EntryComponent extends LitElement {
   };
 
   override render() {
-    console.log(this.isEditable);
     if (!this.entry || this.isEditable) {
       // is new or can edit
       return html`

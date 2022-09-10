@@ -1,6 +1,7 @@
 import {LitElement, html} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import Papa from 'papaparse';
+import {saveAs} from 'file-saver';
 
 import {localStorageKeys, eventKeys} from '../consts';
 import {refreshAppEntries, setView} from '../utils/events';
@@ -64,6 +65,18 @@ class UploadComponent extends LitElement {
             <button>Upload</button>
           </form>
           ${this.hasUploaded ? html`<strong>Upload success</strong>` : ''}
+          <hr />
+          <h3>Export</h3>
+          <p>Download your data</p>
+          <button
+            @click=${() => {
+              const memories = localStorage.getItem(localStorageKeys.data);
+              const file = new Blob([JSON.stringify(memories, null, 2)]);
+              saveAs(file, `great-${new Date().toISOString()}.json`);
+            }}
+          >
+            Download
+          </button>
         </section>
         <section slot="footer">
           <section slot="footer">

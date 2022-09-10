@@ -20,3 +20,4 @@ The data is kept in the same format as Presently, CSV with the headings entryDat
 - [ ] Some actual styling
 - [ ] Backup entries
 - [ ] Wipe entries
+- [ ] Dates should be stored in ISO
